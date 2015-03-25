@@ -1,0 +1,10 @@
+{
+    "DEV": "true",
+    "VERBOSE": "true",
+    "HTTP_PORT": "3000",
+    "XMPP_PORT": "5222",
+    "SESSION_SECRET": "thisaintasecrethoney",
+    "DB_CONN_STRING": "postgres://postgres:postgres@localhost:5432/couriersms",
+    "TOKEN_SECRET": "llkjhdflgkhdslkjsdfghklsdfjdfhg",
+    "GCM_KEY": "AIzaSyDN1T3b8cYamWblKk_9FvyVWdzx3reZttM"
+}
