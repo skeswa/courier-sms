@@ -68,6 +68,26 @@ function error(client, to, from) {
 }
 
 module.exports = {
+    notify: function(user, contact, text) {
+        var client = clientMap.get(user.id);
+        if (client) {
+            var from = contact.number + '@courier.sms',
+                to = user.email;
+            var message = new ltx.Element('message', {
+                from: from,
+                to: to,
+                type: 'chat'
+            });
+            message.c('body').t(text);
+            message.c('active', {
+                xmlns: 'http://jabber.org/protocol/chatstates'
+            });
+            log.debug('NOTIFY', message.toString());
+            client.send(message);
+        } else {
+            log.debug('Could not notify client for user id', user.id, '- no such client exists');
+        }
+    },
     start: function() {
         server = new xmpp.C2SServer({
             port: env.xmppServer
