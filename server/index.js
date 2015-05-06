@@ -1,5 +1,8 @@
 var express         = require('express'),
+    http            = require('http'),
+    https           = require('https'),
     // General purpose imports
+    fs              = require('fs'),
     path            = require('path'),
     async           = require('async'),
     // Express specific imports
@@ -68,13 +71,23 @@ async.series([
         routes.route(app, callback);
     },
     function(callback) {
+        // Load SSL stuff
+        var key     = fs.readFileSync(env.get().tlsKeyPath, 'utf-8'),
+            cert    = fs.readFileSync(env.get().tlsCertPath, 'utf-8');
         // Start servicing the requests
-        app.listen(env.get().httpPort, callback);
+        var httpServer  = http.createServer(app),
+            httpsServer = https.createServer({
+                key:    key,
+                cert:   cert
+            }, app);
+        httpServer.listen(env.get().httpPort);
+        httpsServer.listen(env.get().httpsPort);
+        callback();
     }
 ], function(err) {
     if (err) {
         log.error('Server could not start', err);
     } else {
-        log.info('Server is listening on ' + env.get().httpPort + '\n');
+        log.info('Server is listening on ' + env.get().httpPort + ' for HTTP, on ' + env.get().httpsPort + ' for HTTPS, and on ' + env.get().xmppPort + ' for XMPP\n');
     }
 });

@@ -9,6 +9,7 @@ exports.route = function(app, callback) {
         if (err) callback(err);
         else {
             async.each(files, function(file, callback) {
+                var routingErr = undefined;
                 try {
                     if (file !== 'index.js' && (file.indexOf('.js', file.length - 3) !== -1)) {
                         var routeModule = require(path.join(__dirname, file));
@@ -17,10 +18,10 @@ exports.route = function(app, callback) {
                             routeModule.route(app);
                         }
                     }
-                    callback();
                 } catch (err) {
-                    callback(err);
+                    routingErr = err;
                 }
+                callback(err);
             }, function(err) {
                 if (err) callback(err);
                 else {

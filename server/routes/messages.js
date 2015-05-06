@@ -48,30 +48,34 @@ exports.route = function(app) {
         });
     });
 
-    app.post('/api/messages/:contactId', function(req, res) {
+    app.post('/api/messages/:contactNumber', function(req, res) {
         var Message = req.models.Message,
             Contact = req.models.Contact;
 
-        var userId      = req.user.id,
-            contactId   = parseInt(req.params.contactId),
-            text        = req.body.text,
-            type        = 'in'; // This route only receives incoming messages
+        var userId          = req.user.id,
+            contactNumber   = req.params.contactNumber,
+            text            = req.body.text,
+            type            = 'in'; // This route only receives incoming messages
 
-        if (isNaN(contactId)) return res.status(400).json({
-            message: 'The "contactId" parameter was invalid'
+        if (!util.is.string(contactNumber) || contactNumber.length < 1 || contactNumber.length > 254) return res.status(400).json({
+            message: 'The "contactNumber" parameter was invalid'
         });
         else if (!util.is.string(text) || text.length < 1 || text.length > 160) return res.status(400).json({
             message: 'The "text" field was invalid (probably too short or too long)'
         });
 
-        Contact.findOne(contactId).then(function(contact) {
+        Contact.findOne({
+            where: {
+                number: contactNumber
+            }
+        }).then(function(contact) {
             Message.create({
                 messageText: text,
                 messageType: type,
-                contactId: contactId,
+                contactId: contact.id,
                 senderId: userId
             }).then(function() {
-                xmpp.notify(req.user, contact, text);
+                xmpp.notify(req.user, contact.number, text);
                 return res.status(200).send();
             }).catch(function(err) {
                 log.error('Could not create a message', err);
@@ -80,8 +84,9 @@ exports.route = function(app) {
                 });
             });
         }).catch(function(err) {
+            xmpp.notify(req.user, contactNumber, text);
             return res.status(400).json({
-                message: 'Could not find a contact matching the the "contactId" given'
+                message: 'Could not find a contact matching the the "contactNumber" given'
             });
         });
 

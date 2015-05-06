@@ -14,6 +14,9 @@ module.exports = {
                 return e.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i) !== null;
             }
             return false;
+        },
+        array: function(a) {
+            return Object.prototype.toString.call(a) === '[object Array]';
         }
     }
 };

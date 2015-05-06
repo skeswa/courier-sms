@@ -2,9 +2,13 @@
     "DEV": "true",
     "VERBOSE": "true",
     "HTTP_PORT": "3000",
+    "HTTPS_PORT": "4000",
     "XMPP_PORT": "5222",
     "SESSION_SECRET": "thisaintasecrethoney",
     "DB_CONN_STRING": "postgres://postgres:postgres@localhost:5432/couriersms",
     "TOKEN_SECRET": "llkjhdflgkhdslkjsdfghklsdfjdfhg",
+    "GCM_KEY": "AIzaSyDN1T3b8cYamWblKk_9FvyVWdzx3reZttM",
+    "TLS_KEY_PATH": "/home/skeswa/couriersms.key",
+    "TLS_CERT_PATH": "/home/skeswa/couriersms_com.crt",
     "GCM_KEY": "AIzaSyDN1T3b8cYamWblKk_9FvyVWdzx3reZttM"
 }

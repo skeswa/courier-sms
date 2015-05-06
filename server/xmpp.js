@@ -68,10 +68,10 @@ function error(client, to, from) {
 }
 
 module.exports = {
-    notify: function(user, contact, text) {
+    notify: function(user, contactNumber, text) {
         var client = clientMap.get(user.id);
         if (client) {
-            var from = contact.number + '@courier.sms',
+            var from = contactNumber + '@courier.sms',
                 to = user.email;
             var message = new ltx.Element('message', {
                 from: from,
@@ -90,7 +90,11 @@ module.exports = {
     },
     start: function() {
         server = new xmpp.C2SServer({
-            port: env.xmppServer
+            port: env.get().xmppPort,
+            tls: {
+                keyPath: env.get().tlsKeyPath,
+                certPath: env.get().tlsCertPath
+            }
         });
 
         server.on('connect', function(client) {
